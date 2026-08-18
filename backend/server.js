@@ -19,7 +19,7 @@ const app = express();
 // Middleware
 // Allow requests from the Vite frontend
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://smsr-cap.vercel.app'], // Allowed URLs
+  origin: ['http://localhost:5173', 'https://smsrcapital.vercel.app'], // Allowed URLs
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
