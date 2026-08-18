@@ -18,8 +18,12 @@ const app = express();
 // Middleware
 // Middleware
 // Allow requests from the Vite frontend
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:5173'];
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://smsrcapital.vercel.app'], // Allowed URLs
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
