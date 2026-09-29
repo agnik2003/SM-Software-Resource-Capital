@@ -81,7 +81,7 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-bold mb-6 tracking-wider uppercase text-sm">Navigation</h4>
             <ul className="space-y-3">
-              {['Home', 'About Us', 'Services', 'Blog', 'Careers', 'Contact'].map((item) => {
+              {['Home', 'About Us', 'Services', 'Projects', 'Blog', 'Careers', 'Contact'].map((item) => {
                 const path = item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '-')}`;
                 return (
                   <li key={item}>
