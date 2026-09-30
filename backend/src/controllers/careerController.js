@@ -14,7 +14,17 @@ const transporter = nodemailer.createTransport({
 
 exports.submitApplication = async (req, res) => {
   try {
-    const { name, email, phone, location, education, workExperience, resumeLink, termsAccepted } = req.body;
+    let { name, email, phone, location, education, workExperience, termsAccepted } = req.body;
+    const resumeLink = req.file ? `/uploads/resumes/${req.file.filename}` : '';
+
+    // If education is a string (from multipart form data), parse it
+    if (typeof education === 'string') {
+      try {
+        education = JSON.parse(education);
+      } catch (e) {
+        education = [];
+      }
+    }
 
     // Check application constraints manually
     if (education && education.length > 3) {
@@ -31,7 +41,7 @@ exports.submitApplication = async (req, res) => {
       <li><strong>Entry #${idx + 1}:</strong> ${edu.degree} from ${edu.institution} (${edu.year})</li>
     `).join('');
 
-    // EMAIL 1: Sent to your email address (agnik.m03@gmail.com)
+    // EMAIL 1: Sent to your email address (info@smsrc.in)
     const adminMailOptions = {
       from: `"SM Resource Robot" <${process.env.EMAIL_USER}>`,
       to: process.env.COMPANY_EMAIL,
@@ -45,8 +55,14 @@ exports.submitApplication = async (req, res) => {
         <h3>Education Profiles:</h3>
         <ul>${educationHTML}</ul>
         <p><strong>Work Experience:</strong> ${workExperience}</p>
-        <p><strong>Resume Link:</strong> <a href="${resumeLink}" target="_blank">View Candidate Resume</a></p>
+        <p><strong>Resume File:</strong> Attached below</p>
       `,
+      attachments: req.file ? [
+        {
+          filename: req.file.originalname,
+          path: req.file.path
+        }
+      ] : []
     };
 
     // EMAIL 2: Confirmation sent back to the applicant
@@ -57,16 +73,16 @@ exports.submitApplication = async (req, res) => {
       html: `
         <h3>Hello ${name},</h3>
         <p>Thank you for submitting your application to SM Software Resource Group.</p>
-        <p>Our operations team has received your application profiles and your resume link. We are reviewing your technical background and will reach out to schedule an interview if your qualifications align with our current needs.</p>
+        <p>Our operations team has received your application profiles and your resume. We are reviewing your technical background and will reach out to schedule an interview if your qualifications align with our current needs.</p>
         <br />
         <p>Best Regards,</p>
         <p><strong>Talent Acquisition Matrix</strong><br>SM Software Resource Group</p>
       `,
     };
 
-    // Fire off both email transactions asynchronously
-    await transporter.sendMail(adminMailOptions);
-    await transporter.sendMail(applicantMailOptions);
+    // Fire off both email transactions in the background
+    transporter.sendMail(adminMailOptions).catch(err => console.error("Admin Email Error:", err));
+    transporter.sendMail(applicantMailOptions).catch(err => console.error("Applicant Email Error:", err));
 
     res.status(201).json({ success: true, message: "Application filed and tracked successfully." });
   } catch (error) {

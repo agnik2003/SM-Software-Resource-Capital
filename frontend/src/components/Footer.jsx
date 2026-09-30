@@ -125,10 +125,10 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="mailto:smsoftwareresourcecapital@gmail.com" className="flex items-start text-gray-400 hover:text-green-400 transition-colors text-sm group">
+                <a href="mailto:info@smsrc.in" className="flex items-start text-gray-400 hover:text-green-400 transition-colors text-sm group">
                   <Mail className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0 group-hover:animate-pulse" />
                   {/* break-all ensures the long email wraps cleanly to the next line */}
-                  <span className="font-mono break-all leading-relaxed mt-0.5">smsoftwareresourcecapital@gmail.com</span>
+                  <span className="font-mono break-all leading-relaxed mt-0.5">info@smsrc.in</span>
                 </a>
               </li>
             </ul>

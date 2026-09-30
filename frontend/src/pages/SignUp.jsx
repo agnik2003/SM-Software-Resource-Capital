@@ -55,7 +55,6 @@ export default function Signup() {
       if (!response.ok) throw new Error(data.message || 'Invalid OTP.');
 
       localStorage.setItem('token', data.token);
-      localStorage.setItem('userName', data.user.name);
       navigate('/'); // Success! Send to home
 
     } catch (error) {

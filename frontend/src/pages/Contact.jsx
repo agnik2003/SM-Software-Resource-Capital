@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin, Send, MessageSquare, CheckCircle2, AlertCircle, User, Briefcase } from 'lucide-react';
 
 // Step 1: Import your photo asset
@@ -13,6 +13,32 @@ export default function Contact() {
         subject: '',
         message: ''
     });
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/me`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success && data.user) {
+                            setFormData(prev => ({
+                                ...prev,
+                                name: data.user.name || prev.name,
+                                email: data.user.email || prev.email,
+                            }));
+                        }
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch user data:", error);
+                }
+            }
+        };
+        fetchUserData();
+    }, []);
 
     // Handle input changes
     const handleChange = (e) => {
@@ -41,8 +67,12 @@ export default function Contact() {
             }
 
             setStatus({ loading: false, error: null, success: true });
-            // Clear form after successful send
-            setFormData({ name: '', email: '', subject: '', message: '' });
+            // Clear form after successful send, but keep pre-filled data
+            setFormData(prev => ({ 
+                ...prev,
+                subject: '', 
+                message: '' 
+            }));
 
             // Hide success message after 5 seconds
             setTimeout(() => setStatus(prev => ({ ...prev, success: false })), 5000);
@@ -121,11 +151,11 @@ export default function Contact() {
                                         <span className="font-mono text-sm group-hover/link:tracking-wider transition-all">+91 80170 14804</span>
                                     </a>
 
-                                    <a href="mailto:smsoftwareresourcecapital@gmail.com" className="flex items-center text-gray-300 hover:text-green-400 transition-colors group/link">
+                                    <a href="mailto:info@smsrc.in" className="flex items-center text-gray-300 hover:text-green-400 transition-colors group/link">
                                         <div className="w-10 h-10 rounded bg-[#111] border border-gray-800 flex items-center justify-center mr-4 group-hover/link:border-green-500/50 group-hover/link:bg-green-500/10 transition-colors">
                                             <Mail className="w-4 h-4 text-green-500" />
                                         </div>
-                                        <span className="font-mono text-xs md:text-sm group-hover/link:tracking-wider transition-all break-all">smsoftwareresourcecapital@gmail.com</span>
+                                        <span className="font-mono text-xs md:text-sm group-hover/link:tracking-wider transition-all break-all">info@smsrc.in</span>
                                     </a>
                                 </div>
                             </div>

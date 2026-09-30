@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Globe, Smartphone, Server, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Globe, Smartphone, Server, ShieldCheck, CheckCircle2, ArrowRight, Megaphone, Target, Share2, Plus } from 'lucide-react';
 
 export default function Services() {
   const services = [
@@ -54,6 +54,29 @@ export default function Services() {
         "Legacy Code Modernization"
       ],
       techStack: ["Docker", "AWS", "CI/CD Pipelines", "Git"]
+    }
+  ];
+
+  const otherServices = [
+    {
+      title: "Digital Marketing",
+      description: "Build your brand, increase visibility and get more customers.",
+      icon: <Megaphone className="w-10 h-10 text-green-400 mb-4" />
+    },
+    {
+      title: "Meta & Google Ads",
+      description: "Targeted ad campaigns to get better reach, leads and sales.",
+      icon: <Target className="w-10 h-10 text-green-400 mb-4" />
+    },
+    {
+      title: "Social Media Page Handling",
+      description: "Create, grow and manage your social media presence professionally.",
+      icon: <Share2 className="w-10 h-10 text-green-400 mb-4" />
+    },
+    {
+      title: "And More",
+      description: "UI/UX Design, E-commerce, SEO, Branding, IT Consulting and more...",
+      icon: <Plus className="w-10 h-10 text-green-400 mb-4" />
     }
   ];
 
@@ -124,6 +147,39 @@ export default function Services() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* OTHER SERVICES SECTION */}
+        <div className="mt-24 mb-10">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Other Services</h2>
+            <div className="w-20 h-1 bg-green-500 mx-auto rounded-full shadow-[0_0_10px_rgba(34,197,94,0.6)]"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-20">
+            {otherServices.map((service, index) => (
+              <div
+                key={index}
+                className="group p-8 rounded-xl bg-[#0a0a0a]/80 backdrop-blur-sm border border-gray-800 hover:border-green-500 hover:shadow-[0_0_30px_rgba(34,197,94,0.15)] transition-all duration-500 relative overflow-hidden transform hover:-translate-y-2"
+              >
+                {/* Top Glowing Edge on Hover */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-emerald-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+
+                <div className="relative z-10">
+                  {service.icon}
+                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-green-400 transition-colors duration-300">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-400 leading-relaxed text-sm">
+                    {service.description}
+                  </p>
+                </div>
+
+                {/* Bottom Right Hexagon Accent */}
+                <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-green-500/5 rotate-45 group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Call to Action Bar */}

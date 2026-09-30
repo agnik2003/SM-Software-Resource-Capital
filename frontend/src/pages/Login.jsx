@@ -24,7 +24,6 @@ export default function Login() {
       if (!response.ok) throw new Error(data.message || 'Invalid credentials.');
 
       localStorage.setItem('token', data.token);
-      localStorage.setItem('userName', data.user.name);
       setStatus({ loading: false, error: null });
       navigate('/');
 

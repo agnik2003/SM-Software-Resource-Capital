@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Briefcase, GraduationCap, MapPin, Send, Plus, Trash2, CheckCircle2, AlertCircle, X, ChevronRight } from 'lucide-react';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 export default function Careers() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,9 +13,35 @@ export default function Careers() {
     location: '',
     education: [{ institution: '', degree: '', year: '' }],
     workExperience: '',
-    resumeLink: '',
+    resume: null,
     termsAccepted: false
   });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('token');
+      if (isModalOpen && token) {
+        try {
+          const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/me`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.user) {
+              setFormData(prev => ({
+                ...prev,
+                name: data.user.name || prev.name,
+                email: data.user.email || prev.email,
+              }));
+            }
+          }
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+        }
+      }
+    };
+    fetchUserData();
+  }, [isModalOpen]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -21,6 +49,16 @@ export default function Careers() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const handlePhoneChange = (value) => {
+    setFormData(prev => ({ ...prev, phone: value }));
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormData(prev => ({ ...prev, resume: e.target.files[0] }));
+    }
   };
 
   const handleEducationChange = (index, field, value) => {
@@ -48,10 +86,21 @@ export default function Careers() {
     setStatus({ loading: true, error: null, success: false });
 
     try {
+      const submitData = new FormData();
+      submitData.append('name', formData.name);
+      submitData.append('email', formData.email);
+      submitData.append('phone', formData.phone);
+      submitData.append('location', formData.location);
+      submitData.append('education', JSON.stringify(formData.education));
+      submitData.append('workExperience', formData.workExperience);
+      submitData.append('termsAccepted', formData.termsAccepted);
+      if (formData.resume) {
+        submitData.append('resume', formData.resume);
+      }
+
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/careers/apply`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: submitData
       });
 
       const data = await response.json();
@@ -61,11 +110,12 @@ export default function Careers() {
       }
 
       setStatus({ loading: false, error: null, success: true });
-      setFormData({
-        name: '', email: '', phone: '', location: '',
+      setFormData(prev => ({
+        ...prev,
+        phone: '', location: '',
         education: [{ institution: '', degree: '', year: '' }],
-        workExperience: '', resumeLink: '', termsAccepted: false
-      });
+        workExperience: '', resume: null, termsAccepted: false
+      }));
       
       // Close modal automatically after 3 seconds on success
       setTimeout(() => {
@@ -214,7 +264,13 @@ export default function Careers() {
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Phone Number *</label>
-                      <input required type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full bg-[#111] border border-gray-800 rounded-md px-4 py-3 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-mono text-sm" />
+                      <PhoneInput
+                        international
+                        defaultCountry="IN"
+                        value={formData.phone}
+                        onChange={handlePhoneChange}
+                        className="w-full bg-[#111] border border-gray-800 rounded-md px-4 py-3 text-white focus-within:border-green-500 focus-within:ring-1 focus-within:ring-green-500 transition-all font-mono text-sm phone-input-dark"
+                      />
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Location (City, State) *</label>
@@ -264,8 +320,8 @@ export default function Careers() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Resume Link (Google Drive, Dropbox, etc.) *</label>
-                    <input required type="url" name="resumeLink" value={formData.resumeLink} onChange={handleChange} placeholder="https://" className="w-full bg-[#111] border border-gray-800 rounded-md px-4 py-3 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-mono text-sm" />
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Resume (PDF, DOC, DOCX) *</label>
+                    <input required type="file" accept=".pdf,.doc,.docx" name="resume" onChange={handleFileChange} className="w-full bg-[#111] border border-gray-800 rounded-md px-4 py-3 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-mono text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-green-500/10 file:text-green-500 hover:file:bg-green-500/20" />
                   </div>
 
                   {/* Terms and Submission */}

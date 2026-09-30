@@ -40,6 +40,7 @@ exports.signup = async (req, res) => {
     }
 
     // Send the OTP via Email
+    // Send the OTP via Email
     await transporter.sendMail({
       from: `"SM Software Capital" <${process.env.EMAIL_USER}>`,
       to: email,
@@ -97,5 +98,21 @@ exports.login = async (req, res) => {
     res.json({ success: true, token, user: { id: user._id, name: user.name, email } });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+exports.getMe = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ message: 'No token provided' });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select('-password -otp -otpExpires');
+    
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.json({ success: true, user: { id: user._id, name: user.name, email: user.email } });
+  } catch (error) {
+    res.status(401).json({ success: false, message: 'Invalid or expired token' });
   }
 };

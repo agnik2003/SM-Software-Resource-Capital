@@ -16,7 +16,7 @@ exports.submitContact = async (req, res) => {
 
     const mailOptions = {
       from: `"SM Software Website" <${process.env.EMAIL_USER}>`,
-      to: process.env.COMPANY_EMAIL, // Sends to agnik.m03@gmail.com
+      to: process.env.COMPANY_EMAIL, // Sends to info@smsrc.in
       replyTo: email, // If you click "reply" in Gmail, it replies directly to the client
       subject: `New Inquiry: ${subject}`,
       html: `
@@ -30,7 +30,7 @@ exports.submitContact = async (req, res) => {
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    transporter.sendMail(mailOptions).catch(err => console.error("Contact Email Error:", err));
     res.status(200).json({ success: true, message: "Transmission sent successfully." });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

@@ -20,20 +20,39 @@ const Navbar = () => {
 
   // 2. Auth Session Check
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedName = localStorage.getItem('userName');
+    const checkSession = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setUserName(null);
+        return;
+      }
 
-    if (token && storedName) {
-      setUserName(storedName.split(' ')[0]);
-    } else {
-      setUserName(null);
-    }
+      // Silently sync with backend to get latest data
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/me`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.user) {
+            setUserName(data.user.name.split(' ')[0]);
+          }
+        } else {
+          // Token invalid or expired
+          handleLogout();
+        }
+      } catch (error) {
+        console.error("Session sync failed:", error);
+      }
+    };
+
+    checkSession();
   }, [location.pathname]);
 
   // 3. Secure Logout Protocol
   const handleLogout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('userName');
     setUserName(null);
     setIsOpen(false);
     navigate('/login');
@@ -59,14 +78,14 @@ const Navbar = () => {
           : 'bg-[#050505]/50 backdrop-blur-md border-b border-transparent py-4'
         }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-20">
 
             {/* LOGO */}
             <Link to="/" className="flex items-center" aria-label="SM Software Resource Capital - Go to Home">
               <img
                 src={logo}
                 alt="SM Software Resource Capital"
-                className="h-12 md:h-14 w-auto object-contain"
+                className="h-16 md:h-24 w-auto object-contain"
               />
             </Link>
 
