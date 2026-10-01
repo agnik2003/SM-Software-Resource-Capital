@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Smartphone, MonitorPlay, Code, Wrench, ArrowRight, Megaphone, Target, Share2, Plus } from 'lucide-react';
+import StatsSection from '../components/StatsSection';
+import TestimonialsSection from '../components/TestimonialsSection';
+import IndustriesSection from '../components/IndustriesSection';
 
 // --- CUSTOM PARTICLE NETWORK BACKGROUND ---
 const ParticleBackground = () => {
@@ -262,6 +265,16 @@ export default function Home() {
         </div>
 
       </div>
+
+      {/* ── Industries We Serve ── */}
+      <IndustriesSection />
+
+      {/* ── Stats Section ── */}
+      <StatsSection />
+
+      {/* ── Testimonials Section ── */}
+      <TestimonialsSection />
+
     </div>
   );
 }

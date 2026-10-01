@@ -31,3 +31,52 @@ body {
   border: 1px solid #333 !important;
   box-shadow: none !important;
 }
+
+/* ─── Shared section animations ─────────────────────────── */
+
+/* Fade + slide up — used on hero and stat cards */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s ease-out both;
+}
+
+/* Orbital ring slow rotation */
+@keyframes orbitalSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.orbital-spin {
+  animation: orbitalSpin linear infinite;
+}
+
+/* Stat card wrapper entrance */
+.stat-card-wrapper {
+  animation: fadeInUp 0.7s ease-out both;
+}
+
+/* Icon gentle pulse */
+@keyframes iconPulse {
+  0%, 100% { box-shadow: 0 0 14px currentColor; }
+  50%       { box-shadow: 0 0 28px currentColor; }
+}
+
+.stat-icon-ring {
+  animation: iconPulse 3s ease-in-out infinite;
+}
+
+/* Testimonial card 3-D scale on active */
+.testimonial-card {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
