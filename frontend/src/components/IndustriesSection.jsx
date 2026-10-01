@@ -108,7 +108,7 @@ const industries = [
     title: 'Fashion & Apparel',
     sub: 'Boutiques · Labels · D2C',
     icon: ShoppingBag,
-    image: '/industries/industry_fashion_1790845553452.jpg',
+    image: '/industries/industry_fashion_1790845553452.webp',
     accent: '#ec4899',
     query: 'Fashion',
   },
