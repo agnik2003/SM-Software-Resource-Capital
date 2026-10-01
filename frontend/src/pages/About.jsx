@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 
 // Reusing some of our premium generated images for the About page
 const images = {
-  mission: '/industries/industry_saas_tech_1790845461622.jpg',
-  security: '/industries/industry_finance_1790845293044.jpg',
-  scale: '/industries/industry_ecommerce_1790845330093.jpg',
+  mission: '/industries/industry_saas_tech_1790845461622.webp',
+  security: '/industries/industry_finance_1790845293044.webp',
+  scale: '/industries/industry_ecommerce_1790845330093.webp',
 };
 
 const AdvantageCard = ({ title, description, icon: Icon, image, delay }) => (
